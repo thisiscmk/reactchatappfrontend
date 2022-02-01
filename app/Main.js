@@ -139,13 +139,13 @@ function Main() {
                 {state.loggedIn ? <Home /> : <HomeGuest />}
               </Route>
               <Route path="/create-post" exact>
-                <CreatePost />
+                {state.loggedIn ? <CreatePost /> : <HomeGuest />}
               </Route>
               <Route path="/post/:id" exact>
-                <ViewSinglePost />
+                {state.loggedIn ? <ViewSinglePost /> : <HomeGuest />}
               </Route>
               <Route path="/post/:id/edit" exact>
-                <EditPost />
+                {state.loggedIn ? <EditPost /> : <HomeGuest />}
               </Route>
               <Route path="/about-us" exact>
                 <About />
@@ -153,14 +153,12 @@ function Main() {
               <Route path="/terms" exact>
                 <Terms />
               </Route>
-              <Route path="/profile/:username">
-                <Profile />
-              </Route>
+              <Route path="/profile/:username">{state.loggedIn ? <Profile /> : <HomeGuest />}</Route>
               <Route path="/profile/:username/followers" exact>
-                <Profile />
+                {state.loggedIn ? <Profile /> : <HomeGuest />}
               </Route>
               <Route path="/profile/:username/following" exact>
-                <Profile />
+                {state.loggedIn ? <Profile /> : <HomeGuest />}
               </Route>
               {/* Error route */}
               <Route>
