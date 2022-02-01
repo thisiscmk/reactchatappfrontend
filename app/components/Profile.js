@@ -6,6 +6,7 @@ import StateContext from "../StateContext"
 import ProfilePosts from "./ProfilePosts"
 import { useImmer } from "use-immer"
 import ProfileFollows from "./ProfileFollows"
+import NotFound from "../components/NotFound"
 
 function Profile() {
   //create a variable that holds the username from the url
@@ -21,7 +22,8 @@ function Profile() {
       profileAvatar: "https://gravatar.com/avatar/placeholder?s=128",
       isFollowing: false,
       counts: { postCount: "", followerCount: "", followingCount: "" }
-    }
+    },
+    notFound: false
   })
 
   useEffect(() => {
@@ -32,7 +34,11 @@ function Profile() {
       try {
         const response = await axios.post(`/profile/${username}`, { token: globalAppState.user.token }, { cancelToken: request.token })
         setState(draft => {
-          draft.profileData = response.data
+          if (response.data) {
+            draft.profileData = response.data
+          } else {
+            draft.notFound = true
+          }
         })
       } catch (e) {
         console.log("Problem found")
@@ -110,6 +116,8 @@ function Profile() {
     }
   }, [state.stopFollowingRequestCount])
 
+  if (state.notFound) return <NotFound />
+
   return (
     <Page title="Profile Screen">
       <h2>
@@ -138,22 +146,10 @@ function Profile() {
         </NavLink>
       </div>
 
-      {/* <Switch>
-        <Route path="" element={<ProfilePosts />} />
-        <Route path="followers" element={<ProfilePosts />} />
-        <Route path="following" element={<ProfilePosts />} />
-      </Switch> */}
-
       <Switch>
         <Route exact path="/profile/:username">
           <ProfilePosts />
         </Route>
-        {/* <Route exact path="/profile/:username/followers">
-          <ProfileFollowers />
-        </Route>
-        <Route exact path="/profile/:username/following">
-          <ProfileFollowing />
-        </Route> */}
         <Route path="/profile/:username/:action">
           <ProfileFollows action="followers" />
         </Route>
